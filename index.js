@@ -6,6 +6,7 @@ app.set("view engine","ejs");
 app.set("views", path.join(__dirname,"views"));
 app.use(methodOverRide("_method"));
 
+
 //middleware
 app.use((req,res,next)=>{
     req.responseTime = new Date(Date.now()).toString();
