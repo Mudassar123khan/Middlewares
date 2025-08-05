@@ -8,12 +8,24 @@ app.use(methodOverRide("_method"));
 
 
 //middleware
-app.use((req,res,next)=>{
-    req.responseTime = new Date(Date.now()).toString();
-    console.log(req.method, req.path,req.responseTime,req.hostname);
-    next();
+// app.use((req,res,next)=>{
+//     req.responseTime = new Date(Date.now()).toString();
+//     console.log(req.method, req.path,req.responseTime,req.hostname);
+//     next();
+// });
+
+//Access Token
+app.use("/api",(req,res,next)=>{
+    let {token} = req.query;
+    if(token === "iamironman"){
+        return next();
+    }
+    res.send("ACCESS DENIED");
 });
 
+app.use("/api",(req,res)=>{
+    res.send("data");
+});
 
 
 app.get("/",(req,res)=>{
