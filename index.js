@@ -5,7 +5,7 @@ const methodOverRide = require('method-override');
 app.set("view engine","ejs");
 app.set("views", path.join(__dirname,"views"));
 app.use(methodOverRide("_method"));
-
+const ExpressError = require('./ExpressError.js');
 
 //middleware
 // app.use((req,res,next)=>{
@@ -15,27 +15,28 @@ app.use(methodOverRide("_method"));
 // });
 
 //Access Token
-app.use("/api",(req,res,next)=>{
+const checkToken = (req,res,next)=>{
     let {token} = req.query;
     if(token === "iamironman"){
-        return next();
+        next();
     }
-    res.send("ACCESS DENIED");
-});
+    throw new ExpressError(401,"Access Denied");
+};
 
-app.use("/api",(req,res)=>{
+app.get("/api",checkToken,(req,res)=>{
     res.send("data");
 });
 
-
-app.get("/",(req,res)=>{
-    res.render("home.ejs");
+app.get("/err",(req,res)=>{
+    console.log("request to err route is received");
+    abc = abc;
 });
 
-app.post("/req",(req,res)=>{
-    res.send("received");
-});
-
+app.use((err,req,res,next)=>{
+    let {status, message} = err;
+    console.log("---------ERROR----------");
+    res.status(status).send(message);
+})
 //Server
 app.listen(8080,()=>{
     console.log("Server running on Port: 8080");
