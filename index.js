@@ -27,13 +27,27 @@ app.get("/api",checkToken,(req,res)=>{
     res.send("data");
 });
 
+const adminReq = (req,res,next)=>{
+    let {token} = req.query;
+    console.log("Request to admin route is received");
+    if(token=="Admin"){
+        return next();
+    }
+    throw new ExpressError(403,"Your are not the boss");
+};
+
+app.get("/admin",adminReq,(req,res)=>{
+    console.log("Request to admin route 2 is received");
+    res.send("hello Sir");
+});
+
 app.get("/err",(req,res)=>{
     console.log("request to err route is received");
     abc = abc;
 });
 
 app.use((err,req,res,next)=>{
-    let {status, message} = err;
+    let {status=500, message} = err;
     console.log("---------ERROR----------");
     res.status(status).send(message);
 })
